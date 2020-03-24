@@ -79,8 +79,8 @@ int __cdecl wmain(
 
     if (argc < 2)
     {
-        wprintf(L"%ws: <Url1> [Url2] ... \n\n", argv[0]);
-        wprintf(L"Note: The URI is a fully qualified URI and must include the terminating (/) character.");
+        fwprintf(stdout, L"%ws: <Url1> [Url2] ... \n\n", argv[0]);
+        fwprintf(stdout, L"Note: The URI is a fully qualified URI and must include the terminating (/) character.");
         return -1;
     }
 
@@ -95,7 +95,7 @@ int __cdecl wmain(
 
     if (retCode != NO_ERROR)
     {
-        wprintf(L"HttpInitialize failed with %lu \n", retCode);
+        fwprintf(stderr, L"HttpInitialize failed with %lu \n", retCode);
         return retCode;
     }
 
@@ -109,7 +109,7 @@ int __cdecl wmain(
 
     if (retCode != NO_ERROR)
     {
-        wprintf(L"HttpCreateHttpHandle failed with %lu \n", retCode);
+        fwprintf(stderr, L"HttpCreateHttpHandle failed with %lu \n", retCode);
         goto CleanUp;
     }
 
@@ -126,7 +126,7 @@ int __cdecl wmain(
     //
     for (int i = 1; i < argc; i++)
     {
-        wprintf(L"listening for requests on the following url: %s\n", argv[i]);
+        fwprintf(stdout, L"listening for requests on the following url: %s\n", argv[i]);
 
         retCode = HttpAddUrl(
             hReqQueue,    // Req Queue
@@ -136,7 +136,7 @@ int __cdecl wmain(
 
         if (retCode != NO_ERROR)
         {
-            wprintf(L"HttpAddUrl failed with %lu \n", retCode);
+            fwprintf(stderr, L"HttpAddUrl failed with %lu \n", retCode);
             goto CleanUp;
         }
         else
@@ -260,7 +260,7 @@ DWORD DoReceiveRequests(
             switch (pRequest->Verb)
             {
             case HttpVerbGET:
-                wprintf(L"Got a GET request for %ws \n",
+                fwprintf(stdout, L"Got a GET request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
                 result = SendHttpResponse(
@@ -275,14 +275,14 @@ DWORD DoReceiveRequests(
 
             case HttpVerbPOST:
 
-                wprintf(L"Got a POST request for %ws \n",
+                fwprintf(stdout, L"Got a POST request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
                 result = SendHttpPostResponse(hReqQueue, pRequest);
                 break;
 
             default:
-                wprintf(L"Got a unknown request for %ws \n",
+                fwprintf(stdout, L"Got a unknown request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
                 result = SendHttpResponse(
@@ -439,7 +439,7 @@ DWORD SendHttpResponse(
 
     if (result != NO_ERROR)
     {
-        wprintf(L"HttpSendHttpResponse failed with %lu \n", result);
+        fwprintf(stderr, L"HttpSendHttpResponse failed with %lu \n", result);
     }
 
     return result;
@@ -495,7 +495,7 @@ DWORD SendHttpPostResponse(
     if (pEntityBuffer == NULL)
     {
         result = ERROR_NOT_ENOUGH_MEMORY;
-        wprintf(L"Insufficient resources \n");
+        fwprintf(stderr, L"Insufficient resources \n");
         goto Done;
     }
 
@@ -530,7 +530,7 @@ DWORD SendHttpPostResponse(
             ) == 0)
         {
             result = GetLastError();
-            wprintf(L"GetTempFileName failed with %lu \n", result);
+            fwprintf(stderr, L"GetTempFileName failed with %lu \n", result);
             goto Done;
         }
 
@@ -547,7 +547,7 @@ DWORD SendHttpPostResponse(
         if (hTempFile == INVALID_HANDLE_VALUE)
         {
             result = GetLastError();
-            wprintf(L"Cannot create temporary file. Error %lu \n",
+            fwprintf(stderr, L"Cannot create temporary file. Error %lu \n",
                 result);
             goto Done;
         }
@@ -650,7 +650,8 @@ DWORD SendHttpPostResponse(
 
                 if (result != NO_ERROR)
                 {
-                    wprintf(
+                    fwprintf(
+                        stderr,
                         L"HttpSendHttpResponse failed with %lu \n",
                         result
                         );
@@ -687,7 +688,8 @@ DWORD SendHttpPostResponse(
 
                 if (result != NO_ERROR)
                 {
-                    wprintf(
+                    fwprintf(
+                        stderr,
                         L"HttpSendResponseEntityBody failed %lu\n",
                         result
                         );
@@ -699,7 +701,8 @@ DWORD SendHttpPostResponse(
 
 
             default:
-                wprintf(
+                fwprintf(
+                    stderr,
                     L"HttpReceiveRequestEntityBody failed with %lu \n",
                     result);
                 goto Done;
@@ -726,7 +729,7 @@ DWORD SendHttpPostResponse(
             );
         if (result != NO_ERROR)
         {
-            wprintf(L"HttpSendHttpResponse failed with %lu \n",
+            fwprintf(stderr, L"HttpSendHttpResponse failed with %lu \n",
                 result);
         }
     }
