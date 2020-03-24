@@ -40,7 +40,8 @@ SendHttpResponse(
     IN PHTTP_REQUEST pRequest,
     IN USHORT        StatusCode,
     IN PSTR          pReason,
-    IN PSTR          pEntity
+    IN PSTR          pEntity,
+    IN PSTR          pContentType
     );
 
 DWORD
@@ -267,7 +268,8 @@ DWORD DoReceiveRequests(
                     pRequest,
                     200,
                     (PSTR)"OK",
-                    (PSTR)"Hey! You hit the server \r\n"
+                    (PSTR)"Hey! You hit the server \r\n",
+                    (PSTR)"text/plain"
                     );
                 break;
 
@@ -288,7 +290,8 @@ DWORD DoReceiveRequests(
                     pRequest,
                     503,
                     (PSTR)"Not Implemented",
-                    NULL
+                    NULL,
+                    (PSTR)"text/plain"
                     );
                 break;
             }
@@ -372,6 +375,7 @@ Arguments:
     StatusCode    - Response Status Code
     pReason       - Response reason phrase
     pEntityString - Response entity body
+    pContentType  - Response content type
 
 Return Value:
     Success/Failure.
@@ -382,7 +386,8 @@ DWORD SendHttpResponse(
     IN PHTTP_REQUEST pRequest,
     IN USHORT        StatusCode,
     IN PSTR          pReason,
-    IN PSTR          pEntityString
+    IN PSTR          pEntityString,
+    IN PSTR          pContentType
     )
 {
     HTTP_RESPONSE   response;
@@ -398,7 +403,7 @@ DWORD SendHttpResponse(
     //
     // Add a known header.
     //
-    ADD_KNOWN_HEADER(response, HttpHeaderContentType, "text/html");
+    ADD_KNOWN_HEADER(response, HttpHeaderContentType, pContentType);
 
     if (pEntityString)
     {
