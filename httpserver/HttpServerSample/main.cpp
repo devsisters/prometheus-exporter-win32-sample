@@ -278,12 +278,14 @@ DWORD DoReceiveRequests(
                     (PSTR)"text/plain"
                     );
             }
+/*
             else if (pRequest->Verb == HttpVerbPOST) {
                 fwprintf(stdout, L"Got a POST request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
                 result = SendHttpPostResponse(hReqQueue, pRequest);
             }
+*/
             else {
                 fwprintf(stdout, L"Got a unknown request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
