@@ -14,6 +14,6 @@ int increase_counter(const int status_code, const int step) {
 	return val;
 }
 
-inline int get_counter_value(const int status_code) {
+int get_counter_value(const int status_code) {
 	return increase_counter(status_code, 0);
 }
