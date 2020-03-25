@@ -6,6 +6,7 @@
 #include "sample_metric.h"
 
 #include <sstream>
+#include <ctime>
 
 //
 // Macros.
@@ -264,9 +265,19 @@ DWORD DoReceiveRequests(
                 fwprintf(stdout, L"Got a GET request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
+                std::time_t ts = std::time(nullptr);
                 auto counter_value = increase_counter(200);
+                std::vector<int> code_list;
+                get_metric_key_list(code_list);
+
                 std::stringstream entity_buffer;
-                entity_buffer << "Hey! You hit the server " << counter_value << " time(s)" << std::endl;
+                entity_buffer << "# HELP http_requests_total The total number of HTTP requests." << std::endl;
+                entity_buffer << "# TYPE http_requests_total counter" << std::endl;
+                for (auto code_iterator = code_list.begin(); code_iterator != code_list.end(); ++code_iterator) {
+                    auto v = get_counter_value(*code_iterator);
+                    entity_buffer << "http_requests_total{method=\"get\",code=\"" <<
+                        *code_iterator << "\"} " << v << " " << ts << std::endl;
+                }
                 std::string s = entity_buffer.str();
 
                 result = SendHttpResponse(

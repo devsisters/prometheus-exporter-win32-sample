@@ -17,3 +17,9 @@ int increase_counter(const int status_code, const int step) {
 int get_counter_value(const int status_code) {
 	return increase_counter(status_code, 0);
 }
+
+void get_metric_key_list(std::vector<int> &v) {
+	for (auto it = metric_counters.begin(); it != metric_counters.end(); ++it) {
+		v.push_back(it->first);
+	}
+}
