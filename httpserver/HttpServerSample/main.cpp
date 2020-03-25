@@ -3,6 +3,9 @@
 //
 
 #include "precomp.h"
+#include "sample_metric.h"
+
+#include <sstream>
 
 //
 // Macros.
@@ -257,31 +260,31 @@ DWORD DoReceiveRequests(
             //
             // Worked! 
             // 
-            switch (pRequest->Verb)
-            {
-            case HttpVerbGET:
+            if (pRequest->Verb == HttpVerbGET) {
                 fwprintf(stdout, L"Got a GET request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
+
+                auto counter_value = increase_counter(200);
+                std::stringstream entity_buffer;
+                entity_buffer << "Hey! You hit the server " << counter_value << " time(s)" << std::endl;
+                std::string s = entity_buffer.str();
 
                 result = SendHttpResponse(
                     hReqQueue,
                     pRequest,
                     200,
                     (PSTR)"OK",
-                    (PSTR)"Hey! You hit the server \r\n",
+                    (PSTR)s.c_str(),
                     (PSTR)"text/plain"
                     );
-                break;
-
-            case HttpVerbPOST:
-
+            }
+            else if (pRequest->Verb == HttpVerbPOST) {
                 fwprintf(stdout, L"Got a POST request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
                 result = SendHttpPostResponse(hReqQueue, pRequest);
-                break;
-
-            default:
+            }
+            else {
                 fwprintf(stdout, L"Got a unknown request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
@@ -293,7 +296,6 @@ DWORD DoReceiveRequests(
                     NULL,
                     (PSTR)"text/plain"
                     );
-                break;
             }
 
             if (result != NO_ERROR)
