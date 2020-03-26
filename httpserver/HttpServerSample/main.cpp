@@ -265,7 +265,6 @@ DWORD DoReceiveRequests(
                 fwprintf(stdout, L"Got a GET request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
-                std::time_t ts = std::time(nullptr);
                 auto counter_value = increase_counter(200);
                 std::vector<int> code_list;
                 get_metric_key_list(code_list);
@@ -276,7 +275,7 @@ DWORD DoReceiveRequests(
                 for (auto code_iterator = code_list.begin(); code_iterator != code_list.end(); ++code_iterator) {
                     auto v = get_counter_value(*code_iterator);
                     entity_buffer << "http_requests_total{method=\"get\",code=\"" <<
-                        *code_iterator << "\"} " << v << " " << ts << std::endl;
+                        *code_iterator << "\"} " << v << std::endl;
                 }
                 std::string s = entity_buffer.str();
 
