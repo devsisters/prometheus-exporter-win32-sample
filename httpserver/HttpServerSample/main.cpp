@@ -3,10 +3,11 @@
 //
 
 #include "precomp.h"
-#include "sample_metric.h"
 
+#include <atomic>
 #include <sstream>
-#include <ctime>
+
+static std::atomic_int counter = 0;
 
 //
 // Macros.
@@ -265,18 +266,10 @@ DWORD DoReceiveRequests(
                 fwprintf(stdout, L"Got a GET request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 
-                auto counter_value = increase_counter(200);
-                std::vector<int> code_list;
-                get_metric_key_list(code_list);
-
                 std::stringstream entity_buffer;
                 entity_buffer << "# HELP http_requests_total The total number of HTTP requests." << std::endl;
                 entity_buffer << "# TYPE http_requests_total counter" << std::endl;
-                for (auto code_iterator = code_list.begin(); code_iterator != code_list.end(); ++code_iterator) {
-                    auto v = get_counter_value(*code_iterator);
-                    entity_buffer << "http_requests_total{method=\"get\",code=\"" <<
-                        *code_iterator << "\"} " << v << std::endl;
-                }
+                entity_buffer << "http_requests_total " << ++counter << std::endl;
                 std::string s = entity_buffer.str();
 
                 result = SendHttpResponse(
@@ -288,15 +281,8 @@ DWORD DoReceiveRequests(
                     (PSTR)"text/plain"
                     );
             }
-/*
-            else if (pRequest->Verb == HttpVerbPOST) {
-                fwprintf(stdout, L"Got a POST request for %ws \n",
-                    pRequest->CookedUrl.pFullUrl);
-
-                result = SendHttpPostResponse(hReqQueue, pRequest);
-            }
-*/
             else {
+                ++counter;
                 fwprintf(stdout, L"Got a unknown request for %ws \n",
                     pRequest->CookedUrl.pFullUrl);
 

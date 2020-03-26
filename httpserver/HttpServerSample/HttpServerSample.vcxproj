@@ -152,12 +152,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="sample_metric.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="precomp.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="sample_metric.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HttpServerSample.rc" />
