@@ -1,5 +1,7 @@
 # Prometheus Exporter Win32 예제
 
+![](https://github.com/devsisters/prometheus-exporter-win32-sample/workflows/Prometheus%20Exporter%20Win32%20Release%20Pipeline/badge.svg)
+
 이 예제 애플리케이션은 Visual C++에서 Windows의 [HTTP Server API](https://docs.microsoft.com/en-us/windows/win32/http/http-server-sample-application)를 사용하여 HTTP 요청을 수신하고 응답을 내보낼 수 있는 기능을 이용하여 Prometheus 메트릭을 송신하는 예를 보여주는 샘플 코드입니다.
 
 이 샘플 코드는 [Microsoft의 예제 코드](https://docs.microsoft.com/en-us/windows/win32/http/http-server-sample-application)를 기반으로 작성되었으며, 이해를 돕기 위하여 동기 방식의 입출력 모델을 사용하여 작성되었습니다. 입출력 완료 포트 (IOCP) 방식의 고성능 버전은 Microsoft의 [Windows 7 SDK 샘플](https://github.com/microsoft/Windows-classic-samples/tree/master/Samples/Win7Samples/netds/http/AsyncServer)을 참고하십시오.
